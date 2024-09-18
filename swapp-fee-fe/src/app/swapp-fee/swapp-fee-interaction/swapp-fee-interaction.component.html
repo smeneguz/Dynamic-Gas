@@ -1,0 +1,21 @@
+<div class="container">
+    <h1>Swapp Fee Interaction</h1>
+    <form>
+      <label for="contractAddress">Smart Contract Address:</label>
+      <input id="contractAddress" [(ngModel)]="contractAddress" name="contractAddress" />
+  
+      <label for="senderAddress">Sender Address:</label>
+      <input id="senderAddress" [(ngModel)]="senderAddress" name="senderAddress" />
+  
+      <label for="currency">Currency:</label>
+      <select id="currency" [(ngModel)]="selectedCurrency" name="currency">
+        <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
+      </select>
+  
+      <label for="maxGasAmount">Max Gas Amount:</label>
+      <input id="maxGasAmount" [(ngModel)]="maxGasAmount" name="maxGasAmount" />
+  
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  

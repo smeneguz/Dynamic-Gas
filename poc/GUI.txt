@@ -1,1 +1,0 @@
-Nella PoC fare la GUI e mockare le varie chiamate

@@ -1,0 +1,81 @@
+/* Stile generale per il container */
+.container {
+    max-width: 600px;
+    margin: 0 auto; /* Centra il contenitore */
+    padding: 20px;
+    background-color: #f9f9f9; /* Sfondo chiaro */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombra per effetto carta */
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Titolo */
+  h1 {
+    text-align: center;
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Stili per il form */
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Stile per le etichette */
+  label {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 8px;
+  }
+  
+  /* Stile per i campi di input */
+  input, select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    transition: border-color 0.3s ease;
+  }
+  
+  /* Cambia colore del bordo quando il campo è attivo */
+  input:focus, select:focus {
+    border-color: #007BFF;
+    outline: none; /* Rimuove il bordo esterno predefinito */
+  }
+  
+  /* Stile per il pulsante */
+  button {
+    padding: 12px;
+    font-size: 16px;
+    background-color: #007BFF; /* Colore del pulsante */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  /* Cambia il colore del pulsante al passaggio del mouse */
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Stile responsive: adatta il layout per schermi più piccoli */
+  @media (max-width: 768px) {
+    .container {
+      padding: 10px;
+    }
+  
+    input, select, button {
+      font-size: 14px;
+      padding: 8px;
+    }
+  
+    h1 {
+      font-size: 20px;
+    }
+  }
+  
