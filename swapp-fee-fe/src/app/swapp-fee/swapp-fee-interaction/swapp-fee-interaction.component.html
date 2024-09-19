@@ -1,41 +1,71 @@
-<div class="form-container">
-  <h2 class="form-title">Swapp Fee Interaction</h2>
+<div class="container mt-5">
+  <div class="card shadow-lg p-4 form-container">
+    <h2 class="form-title">Swapp Fee Interaction</h2>
+    
+    <form (ngSubmit)="onSubmit()">
+      <!-- Sender Address -->
+      <div class="form-group mb-3">
+        <label for="senderAddress" class="form-label">Sender Address</label>
+        <input 
+          type="text" 
+          id="senderAddress" 
+          [(ngModel)]="senderAddress" 
+          name="senderAddress" 
+          class="form-control" 
+          placeholder="Enter Sender Address" 
+          required>
+      </div>
 
-  <!-- Success Message Box -->
-  <div *ngIf="transactionSuccess" class="success-box">
-    <p>Transaction completed successfully!</p>
-    <p>Gas paid: {{ gasAmount }} IOTA</p>
+      <!-- Destination Address -->
+      <div class="form-group mb-3">
+        <label for="destinationAddress" class="form-label">Destination Address</label>
+        <input 
+          type="text" 
+          id="destinationAddress" 
+          [(ngModel)]="destinationAddress" 
+          name="destinationAddress" 
+          class="form-control" 
+          placeholder="Enter Destination Address" 
+          required>
+      </div>
+
+      <!-- Currency -->
+      <div class="form-group mb-3">
+        <label for="selectedCurrency" class="form-label">Currency</label>
+        <select 
+          id="selectedCurrency" 
+          [(ngModel)]="selectedCurrency" 
+          name="selectedCurrency" 
+          class="form-select" 
+          required>
+          <option *ngFor="let currency of currencies" [value]="currency">{{currency}}</option>
+        </select>
+      </div>
+      
+
+      <!-- Max Gas Amount -->
+      <div class="form-group mb-3">
+        <label for="maxGasAmount" class="form-label">Max Gas Amount</label>
+        <input 
+          type="number" 
+          id="maxGasAmount" 
+          [(ngModel)]="maxGasAmount" 
+          name="maxGasAmount" 
+          class="form-control" 
+          placeholder="Enter Max Gas Amount" 
+          required>
+      </div>
+
+<!-- Submit Button -->
+      <div class="submitx">
+       <button type="submit" class="btn btn-primary w-50">Submit</button>
+      </div>
+    </form>
+
+    <!-- Success Box -->
+    <div *ngIf="transactionSuccess" class="success-box mt-4">
+      Transaction successful!
+      <!-- Paid {{gasAmount}} MINT in gas fees. -->
+    </div>
   </div>
-
-  <!-- Form -->
-  <form (ngSubmit)="onSubmit()">
-    <!-- Sender Address -->
-    <div class="form-group">
-      <label for="senderAddress">Sender Address</label>
-      <input type="text" id="senderAddress" [(ngModel)]="senderAddress" name="senderAddress" class="form-control" required />
-    </div>
-
-    <!-- Destination Address -->
-    <div class="form-group">
-      <label for="destinationAddress">Destination Address</label>
-      <input type="text" id="destinationAddress" [(ngModel)]="destinationAddress" name="destinationAddress" class="form-control" required />
-    </div>
-
-    <!-- Currency -->
-    <div class="form-group">
-      <label for="currency">Currency</label>
-      <select id="currency" [(ngModel)]="selectedCurrency" name="selectedCurrency" class="form-control">
-        <option *ngFor="let currency of currencies" [value]="currency">{{ currency }}</option>
-      </select>
-    </div>
-
-    <!-- Max Gas Amount -->
-    <div class="form-group">
-      <label for="maxGasAmount">Max Gas Amount</label>
-      <input type="text" id="maxGasAmount" [(ngModel)]="maxGasAmount" name="maxGasAmount" class="form-control" required />
-    </div>
-
-    <!-- Submit Button -->
-    <button type="submit" class="btn-submit">Submit</button>
-  </form>
 </div>

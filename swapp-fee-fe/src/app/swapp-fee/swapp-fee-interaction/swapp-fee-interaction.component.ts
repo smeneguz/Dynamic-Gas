@@ -11,9 +11,9 @@ import { throwError } from 'rxjs';
 export class SwappFeeInteractionComponent {
   senderAddress: string = '';
   destinationAddress: string = '';
-  selectedCurrency: string = '';
+  selectedCurrency: string = 'MINT'; // Imposta un valore predefinito
   maxGasAmount: string = '';
-  currencies: string[] = ['ETH', 'BTC', 'SOL', 'IOTA'];
+  currencies: string[] = ['MINT']; // Array con un'unica valuta
 
   transactionSuccess: boolean = false; // Stato per la transazione
   gasAmount: number = 0; // Quantità di gas pagato
