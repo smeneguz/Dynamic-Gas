@@ -12,13 +12,14 @@ export class AppController {
 
   @Post('submit-fee') // Endpoint POST per gestire i dati del form
   submitFee(@Body() formData: any) {
-    //console.log('Dati ricevuti dal frontend:', formData);
+    console.log('Dati ricevuti:', formData);
 
-    // Chiamare la funzione del servizio per processare i dati
+    // Processa i dati inviati tramite il form usando il servizio
     const processedData = this.appService.processFormData(formData);
+    
+    // Calcola il gas pagato, per esempio 10 IOTA (questa logica può essere personalizzata)
+    const gasAmount = 10; // Cambia con la logica di calcolo effettiva
 
-    //console.log('Dati elaborati:', processedData);
-
-    return { message: 'Dati ricevuti e processati con successo', data: processedData };
+    return { message: 'Dati ricevuti con successo', processedData, gasAmount }; // Ritorna i dati elaborati e il gas pagato
   }
 }

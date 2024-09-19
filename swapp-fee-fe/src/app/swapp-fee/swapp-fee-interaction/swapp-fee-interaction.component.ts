@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';  // Importa il modulo HttpClient
+import { HttpClient } from '@angular/common/http';  
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
@@ -9,31 +9,36 @@ import { throwError } from 'rxjs';
   styleUrls: ['./swapp-fee-interaction.component.css']
 })
 export class SwappFeeInteractionComponent {
-  contractAddress: string = '';
   senderAddress: string = '';
+  destinationAddress: string = '';
   selectedCurrency: string = '';
   maxGasAmount: string = '';
-  currencies: string[] = ['ETH', 'BTC', 'SOL', 'IOTA'];  // Aggiungi le tue valute
+  currencies: string[] = ['ETH', 'BTC', 'SOL', 'IOTA'];
+
+  transactionSuccess: boolean = false; // Stato per la transazione
+  gasAmount: number = 0; // Quantità di gas pagato
 
   constructor(private http: HttpClient) {}
 
   onSubmit() {
     const formData = {
-      contractAddress: this.contractAddress,
       senderAddress: this.senderAddress,
+      destinationAddress: this.destinationAddress,
       selectedCurrency: this.selectedCurrency,
       maxGasAmount: this.maxGasAmount
     };
 
-    this.http.post('http://localhost:3000/api/submit-fee', formData)  // Sostituisci con la tua API NestJS
+    this.http.post('http://localhost:3000/api/submit-fee', formData)
       .pipe(
         catchError(error => {
           console.error('Errore durante l\'invio del form:', error);
           return throwError(error);
         })
       )
-      .subscribe(response => {
+      .subscribe((response: any) => {
         console.log('Risposta dal server:', response);
+        this.transactionSuccess = true; // Mostra il messaggio di successo
+        this.gasAmount = response.gasAmount; // Mostra il gas pagato
       });
   }
 }
