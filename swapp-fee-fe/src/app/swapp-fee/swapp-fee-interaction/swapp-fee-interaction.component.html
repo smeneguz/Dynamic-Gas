@@ -42,7 +42,6 @@
         </select>
       </div>
       
-
       <!-- Max Gas Amount -->
       <div class="form-group mb-3">
         <label for="maxGasAmount" class="form-label">Max Gas Amount</label>
@@ -56,16 +55,21 @@
           required>
       </div>
 
-<!-- Submit Button -->
+      <!-- Submit Button -->
       <div class="submitx">
-       <button type="submit" class="btn btn-primary w-50">Submit</button>
+        <button type="submit" class="btn btn-primary w-50" [disabled]="transactionSuccess">Submit</button>
       </div>
     </form>
 
     <!-- Success Box -->
-    <div *ngIf="transactionSuccess" class="success-box mt-4">
+    <div *ngIf="transactionSuccess" class="alert alert-success mt-4">
       Transaction successful! You paid {{ gasAmount }} MINT in gas fees.
       Converted amount in IOTA: {{ iotaAmount }}.
+    </div>
+
+    <!-- Error Box -->
+    <div *ngIf="errorMessage" class="alert alert-danger mt-4">
+      {{ errorMessage }}
     </div>
   </div>
 </div>
