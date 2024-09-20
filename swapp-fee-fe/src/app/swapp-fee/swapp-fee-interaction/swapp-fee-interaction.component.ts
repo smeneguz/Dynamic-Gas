@@ -17,6 +17,7 @@ export class SwappFeeInteractionComponent {
 
   transactionSuccess: boolean = false; // Stato per la transazione
   gasAmount: number = 0; // Quantità di gas pagato
+  iotaAmount: number = 0; // Quantità convertita in IOTA
 
   constructor(private http: HttpClient) {}
 
@@ -38,7 +39,8 @@ export class SwappFeeInteractionComponent {
       .subscribe((response: any) => {
         console.log('Risposta dal server:', response);
         this.transactionSuccess = true; // Mostra il messaggio di successo
-        this.gasAmount = response.gasAmount; // Mostra il gas pagato
+        this.gasAmount = response.maxGasAmount; // Mostra il gas pagato
+        this.iotaAmount = response.iotaAmount; // Mostra il valore convertito in IOTA
       });
   }
 }

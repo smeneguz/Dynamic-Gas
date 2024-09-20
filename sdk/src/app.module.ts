@@ -1,13 +1,10 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TokenModule } from './token/token.module';
-import { GasModule } from './gas/gas.module';
-import { BlockchainModule } from './blockchain/blockchain.module';
-
+import { CurrencyConverterService } from './utils/currency-converter.service';
 @Module({
-  imports: [TokenModule, GasModule, BlockchainModule],
+  imports: [],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,CurrencyConverterService],
 })
 export class AppModule {}

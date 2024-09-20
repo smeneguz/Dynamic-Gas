@@ -64,8 +64,8 @@
 
     <!-- Success Box -->
     <div *ngIf="transactionSuccess" class="success-box mt-4">
-      Transaction successful!
-      <!-- Paid {{gasAmount}} MINT in gas fees. -->
+      Transaction successful! You paid {{ gasAmount }} MINT in gas fees.
+      Converted amount in IOTA: {{ iotaAmount }}.
     </div>
   </div>
 </div>
