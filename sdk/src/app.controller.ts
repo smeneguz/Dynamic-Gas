@@ -2,14 +2,15 @@ import { Controller, Get, Post, Body, Query } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CurrencyConverterService } from './utils/currency-converter.service';
 import { AccountService } from './utils/account.service';
+import { FixedAccountService } from './utils/fixed-account.service';
 
 @Controller('api') // Definisce il percorso base per tutti i metodi del controller
 export class AppController {
-  // Inietti sia AppService che CurrencyConverterService nel costruttore
   constructor(
     private readonly appService: AppService,
-    private readonly currencyConverterService: CurrencyConverterService, // Aggiungi il servizio di conversione
-    private readonly accountService: AccountService
+    private readonly currencyConverterService: CurrencyConverterService,
+    private readonly accountService: AccountService,
+    private readonly fixedAccountService: FixedAccountService // Aggiungi il servizio degli account fissi
   ) {}
 
   @Get('test') // Endpoint GET per verificare che il server stia rispondendo
@@ -21,14 +22,13 @@ export class AppController {
   submitFee(@Body() formData: any) {
     console.log('Dati ricevuti:', formData);
 
-    // Converti il maxGasAmount da MINT a IOTA
-    const mintAmount = Number(formData.maxGasAmount); // Assicurati che sia un numero
+    const mintAmount = Number(formData.maxGasAmount);
     const iotaAmount = this.currencyConverterService.convertMintToIota(mintAmount);
 
     return {
       message: 'Dati ricevuti con successo',
       maxGasAmount: mintAmount,  // MINT
-      iotaAmount: iotaAmount  // IOTA
+      iotaAmount: iotaAmount      // IOTA
     };
   }
 
@@ -53,5 +53,11 @@ export class AppController {
   @Get('account')
   getAccountByAlias(@Query('alias') alias: string) {
     return this.accountService.getAccountByAlias(alias);
+  }
+
+  // Endpoint GET per ottenere gli account fissi
+  @Get('fixed-accounts')
+  getFixedAccounts() {
+    return this.fixedAccountService.getFixedAccounts(); // Usa il servizio degli account fissi
   }
 }
