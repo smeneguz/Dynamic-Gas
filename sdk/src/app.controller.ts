@@ -100,51 +100,74 @@ submitFee(@Body() formData: any) {
   // Converti il maxGasAmount da MINT a IOTA
   const iotaAmount = this.currencyConverterService.convertMintToIota(mintAmount);
 
-  // Se tutto è corretto, esegui il comando bash con l'ID dell'oggetto
-  const command = `iota client transfer --to ${destinationAddress} --object-id ${idObjectToTransfer} --gas-budget 50000000`;
+  const switchCommand = `iota client switch --address ${senderAddress}`;
 
-  // Aggiungi il risultato completo del comando a console e al client
-  exec(command, (error, stdout, stderr) => {
+  exec(switchCommand, (error, stdout, stderr) => {
     if (error) {
-      console.error(`Errore durante l'esecuzione del comando: ${error.message}`);
+      console.error(`Errore durante l'esecuzione dello switch: ${error.message}`);
       return {
         success: false,
-        message: `Errore durante l'esecuzione del comando: ${error.message}`,
+        message: `Errore durante l'esecuzione dello switch: ${error.message}`,
         output: error.message // Aggiungi il messaggio di errore nel JSON di risposta
       };
     }
 
     if (stderr) {
-      console.error(`stderr: ${stderr}`);
+      console.error(`stderr durante lo switch: ${stderr}`);
       return {
         success: false,
-        message: `Errore durante l'esecuzione del comando: ${stderr}`,
+        message: `Errore durante lo switch: ${stderr}`,
         output: stderr // Aggiungi l'output di errore al JSON di risposta
       };
     }
 
-    console.log(`Risultato del comando: ${stdout}`);
-    
-    // Invia l'output del comando eseguito nel JSON di risposta
-    return {
-      success: true,
-      message: 'Transazione e comando eseguiti con successo!',
-      maxGasAmount: mintAmount,  // MINT
-      iotaAmount: iotaAmount,    // IOTA
-      transferredObjectId: idObjectToTransfer, // L'ID dell'oggetto trasferito
-      output: stdout // Aggiungi l'output del comando al JSON di risposta
-    };
+    console.log(`Risultato dello switch: ${stdout}`);
+
+    const transferCommand = `iota client transfer --to ${destinationAddress} --object-id ${idObjectToTransfer} --gas-budget 50000000`;
+
+    exec(transferCommand, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Errore durante l'esecuzione del trasferimento: ${error.message}`);
+        return {
+          success: false,
+          message: `Errore durante l'esecuzione del trasferimento: ${error.message}`,
+          output: error.message // Aggiungi il messaggio di errore nel JSON di risposta
+        };
+      }
+
+      if (stderr) {
+        console.error(`stderr durante il trasferimento: ${stderr}`);
+        return {
+          success: false,
+          message: `Errore durante il trasferimento: ${stderr}`,
+          output: stderr // Aggiungi l'output di errore al JSON di risposta
+        };
+      }
+
+      console.log(`Risultato del trasferimento: ${stdout}`);
+
+      // Invia l'output del comando eseguito nel JSON di risposta
+      return {
+        success: true,
+        message: 'Switch e trasferimento eseguiti con successo!',
+        maxGasAmount: mintAmount,  // MINT
+        iotaAmount: iotaAmount,    // IOTA
+        transferredObjectId: idObjectToTransfer, // L'ID dell'oggetto trasferito
+        output: stdout // Aggiungi l'output del trasferimento al JSON di risposta
+      };
+    });
   });
 
   // Ritorna un messaggio di successo immediato (prima che il comando finisca)
   return {
     success: true,
-    message: 'Transazione eseguita, attendere il completamento del comando bash.',
+    message: 'Switch e trasferimento in corso, attendere il completamento del comando bash.',
     maxGasAmount: mintAmount,  // MINT
     iotaAmount: iotaAmount,    // IOTA
     transferredObjectId: idObjectToTransfer // L'ID dell'oggetto trasferito
   };
 }
+
 
 
 
