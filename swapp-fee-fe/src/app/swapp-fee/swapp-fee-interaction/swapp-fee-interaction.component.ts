@@ -19,10 +19,16 @@ export class SwappFeeInteractionComponent {
   gasAmount: number = 0; // Quantità di gas pagato
   iotaAmount: number = 0; // Quantità convertita in IOTA
   errorMessage: string = ''; // Variabile per il messaggio di errore
+  isSubmitting: boolean = false; // Stato per gestire l'invio del form
 
   constructor(private http: HttpClient) {}
 
   onSubmit() {
+    // Impedisce l'invio multiplo del form mentre la transazione è in corso
+    if (this.isSubmitting) return;
+
+    this.isSubmitting = true; // Imposta lo stato a "in invio"
+
     const formData = {
       senderAddress: this.senderAddress,
       destinationAddress: this.destinationAddress,
@@ -36,6 +42,7 @@ export class SwappFeeInteractionComponent {
           console.error('Errore durante l\'invio del form:', error);
           this.errorMessage = 'Errore durante la transazione: ' + (error.error?.message || 'Si è verificato un problema');
           this.transactionSuccess = false; // Impedisce di mostrare il successo in caso di errore
+          this.isSubmitting = false; // Rende possibile un nuovo submit
           return throwError(error);
         })
       )
@@ -45,6 +52,7 @@ export class SwappFeeInteractionComponent {
         this.gasAmount = response.maxGasAmount; // Mostra il gas pagato
         this.iotaAmount = response.iotaAmount;
         this.errorMessage = ''; // Resetta eventuali messaggi di errore
-       });
+        this.isSubmitting = false; // Permette di inviare di nuovo il form
+      });
   }
 }
