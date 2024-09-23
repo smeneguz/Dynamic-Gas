@@ -15,6 +15,7 @@ export class SwappFeeInteractionComponent {
   maxGasAmount: string = '';
   currencies: string[] = ['MINT']; // Array con un'unica valuta
 
+  idObjectToTransfer: string = ''; // Nuovo campo per l'ID dell'oggetto da trasferire
   transactionSuccess: boolean = false; // Stato per la transazione
   gasAmount: number = 0; // Quantità di gas pagato
   iotaAmount: number = 0; // Quantità convertita in IOTA
@@ -24,8 +25,7 @@ export class SwappFeeInteractionComponent {
   constructor(private http: HttpClient) {}
 
   onSubmit() {
-    // Impedisce l'invio multiplo del form mentre la transazione è in corso
-    if (this.isSubmitting) return;
+    if (this.isSubmitting) return; // Impedisce l'invio multiplo durante la richiesta
 
     this.isSubmitting = true; // Imposta lo stato a "in invio"
 
@@ -33,8 +33,13 @@ export class SwappFeeInteractionComponent {
       senderAddress: this.senderAddress,
       destinationAddress: this.destinationAddress,
       selectedCurrency: this.selectedCurrency,
-      maxGasAmount: this.maxGasAmount
+      maxGasAmount: this.maxGasAmount,
+      idObjectToTransfer: this.idObjectToTransfer // Aggiunge il nuovo campo
     };
+
+    // Simulazione del comando di trasferimento
+    const command = `iota client transfer --to ${this.destinationAddress} --object-id ${this.idObjectToTransfer} --gas-budget ${this.maxGasAmount}`;
+    console.log('Comando di trasferimento:', command);
 
     this.http.post('http://localhost:3000/api/submit-fee', formData)
       .pipe(

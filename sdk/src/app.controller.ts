@@ -66,7 +66,6 @@ export class AppController {
 */
 
 //tentativo per aprire bash
-
 @Post('submit-fee')
 submitFee(@Body() formData: any) {
   console.log('Dati ricevuti:', formData);
@@ -74,6 +73,7 @@ submitFee(@Body() formData: any) {
   const senderAddress = formData.senderAddress; // Assicurati che ci sia un campo per l'indirizzo del mittente
   const destinationAddress = formData.destinationAddress; // Indirizzo di destinazione
   const mintAmount = Number(formData.maxGasAmount); // Converti in numero
+  const idObjectToTransfer = formData.idObjectToTransfer; // Nuovo campo per l'ID dell'oggetto da trasferire
 
   // Recupera gli account fissi
   const fixedAccounts: FixedAccount[] = this.fixedAccountService.getFixedAccounts();
@@ -100,15 +100,17 @@ submitFee(@Body() formData: any) {
   // Converti il maxGasAmount da MINT a IOTA
   const iotaAmount = this.currencyConverterService.convertMintToIota(mintAmount);
 
-  // Se tutto è corretto, esegui il comando bash
-  const command = `iota client transfer --to ${destinationAddress} --object-id 0xe9d2a0781d3297b183effbe798d43dcd3b39662c0538ba19265832e945b3cccf --gas-budget ${iotaAmount}`;
+  // Se tutto è corretto, esegui il comando bash con l'ID dell'oggetto
+  const command = `iota client transfer --to ${destinationAddress} --object-id ${idObjectToTransfer} --gas-budget 50000000`;
 
+  // Aggiungi il risultato completo del comando a console e al client
   exec(command, (error, stdout, stderr) => {
     if (error) {
       console.error(`Errore durante l'esecuzione del comando: ${error.message}`);
       return {
         success: false,
-        message: `Errore durante l'esecuzione del comando: ${error.message}`
+        message: `Errore durante l'esecuzione del comando: ${error.message}`,
+        output: error.message // Aggiungi il messaggio di errore nel JSON di risposta
       };
     }
 
@@ -116,28 +118,33 @@ submitFee(@Body() formData: any) {
       console.error(`stderr: ${stderr}`);
       return {
         success: false,
-        message: `Errore durante l'esecuzione del comando: ${stderr}`
+        message: `Errore durante l'esecuzione del comando: ${stderr}`,
+        output: stderr // Aggiungi l'output di errore al JSON di risposta
       };
     }
 
     console.log(`Risultato del comando: ${stdout}`);
+    
+    // Invia l'output del comando eseguito nel JSON di risposta
     return {
       success: true,
       message: 'Transazione e comando eseguiti con successo!',
       maxGasAmount: mintAmount,  // MINT
       iotaAmount: iotaAmount,    // IOTA
+      transferredObjectId: idObjectToTransfer, // L'ID dell'oggetto trasferito
+      output: stdout // Aggiungi l'output del comando al JSON di risposta
     };
   });
 
-  // Ritorna un messaggio di successo immediato
+  // Ritorna un messaggio di successo immediato (prima che il comando finisca)
   return {
     success: true,
     message: 'Transazione eseguita, attendere il completamento del comando bash.',
     maxGasAmount: mintAmount,  // MINT
     iotaAmount: iotaAmount,    // IOTA
+    transferredObjectId: idObjectToTransfer // L'ID dell'oggetto trasferito
   };
 }
-
 
 
 

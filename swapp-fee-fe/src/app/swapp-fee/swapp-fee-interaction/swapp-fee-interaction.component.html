@@ -42,6 +42,20 @@
         </select>
       </div>
       
+<!-- New field for IdObjectToTransfer -->
+<div class="form-group mb-3">
+  <label for="idObjectToTransfer" class="form-label">Object ID To Transfer</label>
+  <input 
+    type="text" 
+    id="idObjectToTransfer" 
+    [(ngModel)]="idObjectToTransfer" 
+    name="idObjectToTransfer" 
+    class="form-control" 
+    placeholder="Enter Object ID to Transfer" 
+    required>
+</div>
+
+
       <!-- Max Gas Amount -->
       <div class="form-group mb-3">
         <label for="maxGasAmount" class="form-label">Max Gas Amount</label>
