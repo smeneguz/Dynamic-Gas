@@ -4,6 +4,7 @@ import { CurrencyConverterService } from './utils/currency-converter.service';
 import { AccountService } from './utils/account.service';
 import { FixedAccountService } from './utils/fixed-account.service';
 import { FixedAccount } from './utils/fixed-account.model';
+import { IotaObjectService } from './utils/iota-object.service'; // Importa il servizio degli oggetti IOTA
 import { exec } from 'child_process';
 
 
@@ -13,7 +14,8 @@ export class AppController {
     private readonly appService: AppService,
     private readonly currencyConverterService: CurrencyConverterService,
     private readonly accountService: AccountService,
-    private readonly fixedAccountService: FixedAccountService // Aggiungi il servizio degli account fissi
+    private readonly fixedAccountService: FixedAccountService, // Aggiungi il servizio degli account fissi
+    private readonly iotaObjectService: IotaObjectService // Inietta il servizio degli oggetti IOTA
   ) {}
 
   @Get('test') // Endpoint GET per verificare che il server stia rispondendo
@@ -70,10 +72,11 @@ export class AppController {
 submitFee(@Body() formData: any) {
   console.log('Dati ricevuti:', formData);
 
-  const senderAddress = formData.senderAddress; // Assicurati che ci sia un campo per l'indirizzo del mittente
+  const senderAddress = formData.senderAddress; // Indirizzo del mittente
   const destinationAddress = formData.destinationAddress; // Indirizzo di destinazione
-  const mintAmount = Number(formData.maxGasAmount); // Converti in numero
-  const idObjectToTransfer = formData.idObjectToTransfer; // Nuovo campo per l'ID dell'oggetto da trasferire
+  const sponsorAddress = formData.sponsorAddress; // Indirizzo dello sponsor
+  const GasAmountInMint = Number(formData.maxGasAmount); // Quantità di gas in MINT
+  const idObjectToTransfer = formData.idObjectToTransfer; // ID dell'oggetto da trasferire
 
   // Recupera gli account fissi
   const fixedAccounts: FixedAccount[] = this.fixedAccountService.getFixedAccounts();
@@ -81,7 +84,7 @@ submitFee(@Body() formData: any) {
   // Trova l'account corrispondente all'indirizzo del mittente
   const senderAccount = fixedAccounts.find(account => account.address === senderAddress);
 
-  // Controllo se l'account esiste
+  // Controllo se l'account del mittente esiste
   if (!senderAccount) {
     return {
       success: false,
@@ -89,8 +92,8 @@ submitFee(@Body() formData: any) {
     };
   }
 
-  // Controlla se il maxGasAmount è minore o uguale al mintBalance
-  if (mintAmount > senderAccount.mintBalance) {
+  // Controlla se il GasAmountInMint è minore o uguale al saldo disponibile nell'account del mittente
+  if (GasAmountInMint > senderAccount.mintBalance) {
     return {
       success: false,
       message: 'Il maxGasAmount specificato è maggiore del balance disponibile nell\'account.'
@@ -98,75 +101,134 @@ submitFee(@Body() formData: any) {
   }
 
   // Converti il maxGasAmount da MINT a IOTA
-  const iotaAmount = this.currencyConverterService.convertMintToIota(mintAmount);
+  const iotaAmount = this.currencyConverterService.convertMintToIota(GasAmountInMint);
 
-  const switchCommand = `iota client switch --address ${senderAddress}`;
+  // Recupera il primo oggetto IOTA associato allo sponsor
+  const iotaObjects = this.iotaObjectService.getIotaObjectsForAccount(sponsorAddress);
+  if (!iotaObjects.length) {
+    return {
+      success: false,
+      message: 'Nessun oggetto IOTA trovato per l\'indirizzo dello sponsor.'
+    };
+  }
+  const firstIotaObject = iotaObjects[0]; // Recupera il primo oggetto IOTA
 
-  exec(switchCommand, (error, stdout, stderr) => {
+  // Fase 1: Esegui lo switch sull'account sponsor
+  const switchToSponsorCommand = `iota client switch --address ${sponsorAddress}`;
+  exec(switchToSponsorCommand, (error, stdout, stderr) => {
     if (error) {
-      console.error(`Errore durante l'esecuzione dello switch: ${error.message}`);
+      console.error(`Errore durante lo switch sull'account sponsor: ${error.message}`);
       return {
         success: false,
-        message: `Errore durante l'esecuzione dello switch: ${error.message}`,
-        output: error.message // Aggiungi il messaggio di errore nel JSON di risposta
+        message: `Errore durante lo switch sull'account sponsor: ${error.message}`,
+        output: error.message
       };
     }
 
     if (stderr) {
-      console.error(`stderr durante lo switch: ${stderr}`);
+      console.error(`stderr durante lo switch sull'account sponsor: ${stderr}`);
       return {
         success: false,
-        message: `Errore durante lo switch: ${stderr}`,
-        output: stderr // Aggiungi l'output di errore al JSON di risposta
+        message: `Errore durante lo switch sull'account sponsor: ${stderr}`,
+        output: stderr
       };
     }
 
-    console.log(`Risultato dello switch: ${stdout}`);
+    console.log(`Risultato dello switch sull'account sponsor: ${stdout}`);
 
-    const transferCommand = `iota client transfer --to ${destinationAddress} --object-id ${idObjectToTransfer} --gas-budget 50000000`;
-
-    exec(transferCommand, (error, stdout, stderr) => {
+    // Fase 2: Trasferisci IOTA dallo sponsor al mittente (sender)
+    const transferToSenderCommand = `iota client transfer --to ${senderAddress} --object-id ${firstIotaObject} --gas-budget 5000000`;
+    exec(transferToSenderCommand, (error, stdout, stderr) => {
       if (error) {
-        console.error(`Errore durante l'esecuzione del trasferimento: ${error.message}`);
+        console.error(`Errore durante il trasferimento di IOTA dallo sponsor al sender: ${error.message}`);
         return {
           success: false,
-          message: `Errore durante l'esecuzione del trasferimento: ${error.message}`,
-          output: error.message // Aggiungi il messaggio di errore nel JSON di risposta
+          message: `Errore durante il trasferimento di IOTA dallo sponsor al sender: ${error.message}`,
+          output: error.message
         };
       }
 
       if (stderr) {
-        console.error(`stderr durante il trasferimento: ${stderr}`);
+        console.error(`stderr durante il trasferimento di IOTA: ${stderr}`);
         return {
           success: false,
-          message: `Errore durante il trasferimento: ${stderr}`,
-          output: stderr // Aggiungi l'output di errore al JSON di risposta
+          message: `Errore durante il trasferimento di IOTA: ${stderr}`,
+          output: stderr
         };
       }
 
-      console.log(`Risultato del trasferimento: ${stdout}`);
+      console.log(`Risultato del trasferimento di IOTA: ${stdout}`);
 
-      // Invia l'output del comando eseguito nel JSON di risposta
-      return {
-        success: true,
-        message: 'Switch e trasferimento eseguiti con successo!',
-        maxGasAmount: mintAmount,  // MINT
-        iotaAmount: iotaAmount,    // IOTA
-        transferredObjectId: idObjectToTransfer, // L'ID dell'oggetto trasferito
-        output: stdout // Aggiungi l'output del trasferimento al JSON di risposta
-      };
+      // Fase 3: Esegui lo switch sull'account del sender
+      const switchToSenderCommand = `iota client switch --address ${senderAddress}`;
+      exec(switchToSenderCommand, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Errore durante lo switch sull'account sender: ${error.message}`);
+          return {
+            success: false,
+            message: `Errore durante lo switch sull'account sender: ${error.message}`,
+            output: error.message
+          };
+        }
+
+        if (stderr) {
+          console.error(`stderr durante lo switch sull'account sender: ${stderr}`);
+          return {
+            success: false,
+            message: `Errore durante lo switch sull'account sender: ${stderr}`,
+            output: stderr
+          };
+        }
+
+        console.log(`Risultato dello switch sull'account sender: ${stdout}`);
+
+        // Fase 4: Trasferisci i MINT al destinatario
+        const transferCommand = `iota client transfer --to ${destinationAddress} --object-id ${idObjectToTransfer} --gas-budget 5000000`;
+        exec(transferCommand, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`Errore durante il trasferimento finale: ${error.message}`);
+            return {
+              success: false,
+              message: `Errore durante il trasferimento finale: ${error.message}`,
+              output: error.message
+            };
+          }
+
+          if (stderr) {
+            console.error(`stderr durante il trasferimento finale: ${stderr}`);
+            return {
+              success: false,
+              message: `Errore durante il trasferimento finale: ${stderr}`,
+              output: stderr
+            };
+          }
+
+          console.log(`Risultato del trasferimento finale: ${stdout}`);
+
+          // Risposta finale con successo
+          return {
+            success: true,
+            message: 'Tutti i trasferimenti eseguiti con successo!',
+            maxGasAmount: GasAmountInMint,  // MINT
+            iotaAmount: iotaAmount,    // IOTA
+            transferredObjectId: idObjectToTransfer, // L'ID dell'oggetto trasferito
+            output: stdout
+          };
+        });
+      });
     });
   });
 
   // Ritorna un messaggio di successo immediato (prima che il comando finisca)
   return {
     success: true,
-    message: 'Switch e trasferimento in corso, attendere il completamento del comando bash.',
-    maxGasAmount: mintAmount,  // MINT
+    message: 'Operazioni in corso, attendere il completamento dei comandi.',
+    maxGasAmount: GasAmountInMint,  // MINT
     iotaAmount: iotaAmount,    // IOTA
-    transferredObjectId: idObjectToTransfer // L'ID dell'oggetto trasferito
+    transferredObjectId: idObjectToTransfer
   };
 }
+
 
 
 

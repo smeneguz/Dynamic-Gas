@@ -9,32 +9,36 @@ import { throwError } from 'rxjs';
   styleUrls: ['./swapp-fee-interaction.component.css']
 })
 export class SwappFeeInteractionComponent {
-  senderAddress: string = '';
-  destinationAddress: string = '';
-  selectedCurrency: string = 'MINT'; // Imposta un valore predefinito
-  maxGasAmount: string = '';
+  senderAddress: string = ''; // Indirizzo del mittente
+  sponsorAddress: string = ''; // Indirizzo dello sponsor
+  destinationAddress: string = ''; // Indirizzo di destinazione
+  selectedCurrency: string = 'MINT'; // Valuta predefinita
+  maxGasAmount: string = ''; // Quantità massima di gas in MINT
+  idObjectToTransfer: string = ''; // ID dell'oggetto da trasferire
   currencies: string[] = ['MINT']; // Array con un'unica valuta
 
-  idObjectToTransfer: string = ''; // Nuovo campo per l'ID dell'oggetto da trasferire
-  transactionSuccess: boolean = false; // Stato per la transazione
+  transactionSuccess: boolean = false; // Stato della transazione
   gasAmount: number = 0; // Quantità di gas pagato
   iotaAmount: number = 0; // Quantità convertita in IOTA
-  errorMessage: string = ''; // Variabile per il messaggio di errore
+  errorMessage: string = ''; // Messaggio di errore
   isSubmitting: boolean = false; // Stato per gestire l'invio del form
 
   constructor(private http: HttpClient) {}
 
   onSubmit() {
-    if (this.isSubmitting) return; // Impedisce l'invio multiplo durante la richiesta
+    // Evita l'invio multiplo durante la richiesta
+    if (this.isSubmitting) return;
 
-    this.isSubmitting = true; // Imposta lo stato a "in invio"
+    // Imposta lo stato a "in invio"
+    this.isSubmitting = true;
 
     const formData = {
       senderAddress: this.senderAddress,
+      sponsorAddress: this.sponsorAddress, // Aggiunge il campo sponsorAddress
       destinationAddress: this.destinationAddress,
       selectedCurrency: this.selectedCurrency,
       maxGasAmount: this.maxGasAmount,
-      idObjectToTransfer: this.idObjectToTransfer // Aggiunge il nuovo campo
+      idObjectToTransfer: this.idObjectToTransfer // Aggiunge il nuovo campo idObjectToTransfer
     };
 
     // Simulazione del comando di trasferimento
@@ -55,7 +59,7 @@ export class SwappFeeInteractionComponent {
         console.log('Risposta dal server:', response);
         this.transactionSuccess = true; // Mostra il messaggio di successo
         this.gasAmount = response.maxGasAmount; // Mostra il gas pagato
-        this.iotaAmount = response.iotaAmount;
+        this.iotaAmount = response.iotaAmount; // Mostra l'importo convertito in IOTA
         this.errorMessage = ''; // Resetta eventuali messaggi di errore
         this.isSubmitting = false; // Permette di inviare di nuovo il form
       });
