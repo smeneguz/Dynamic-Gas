@@ -2,6 +2,9 @@
 
 **Transact with Gas Donation** is a graphical interface developed to facilitate **gas donation** for transactions on the **IOTA** platform. This application allows you to send transactions where a **donor** covers the gas fees, enabling the sender to proceed without paying gas costs directly.
 
+## Live Tutorial
+Check-out the live tutorial on this link : https://youtu.be/8M68QfD0JAs
+
 ## Key Features
 
 - **Gas donation**: A donor account pays the gas fees for the transaction, allowing the sender to transfer an object without incurring any gas costs.
