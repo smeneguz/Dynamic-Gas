@@ -1,6 +1,6 @@
 # Dynamic-Gas
-## Dynamic Gas Integration for IOTA Move
-### Future implementations
+## Dynamic Gas Integration for IOTA Move - Future implementations
+
 
 ## Introduction
 
