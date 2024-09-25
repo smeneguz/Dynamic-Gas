@@ -15,7 +15,8 @@ In addition, the system checks to see if all remaining coins have a stored excha
 
 Below you will find a images highlighting some of the executions/cases: 
 
-![Executions](/home/giulia/nuovo_iota/iota/dapps/swapfee/src/utils/futur_work/IMG.png)
+![Executions](/home/giulia/swapfee/Dynamic-Gas/futur_work/IMG.png)
+
 
 
 
