@@ -16,6 +16,7 @@ export class SwappFeeInteractionComponent {
   maxGasAmount: string = ''; // Quantità massima di gas in MINT
   idObjectToTransfer: string = ''; // ID dell'oggetto da trasferire
   currencies: string[] = ['MINT']; // Array con un'unica valuta
+  sponsorIOTAObject: string = ''; //indirizzo oggetto IOTA dello sponsor
 
   transactionSuccess: boolean = false; // Stato della transazione
   gasAmount: number = 0; // Quantità di gas pagato
@@ -35,6 +36,8 @@ export class SwappFeeInteractionComponent {
     const formData = {
       senderAddress: this.senderAddress,
       sponsorAddress: this.sponsorAddress, // Aggiunge il campo sponsorAddress
+      sponsorIOTAObject: this.sponsorIOTAObject, // Aggiunge il campo sponsorAddress
+      
       destinationAddress: this.destinationAddress,
       selectedCurrency: this.selectedCurrency,
       maxGasAmount: this.maxGasAmount,
@@ -42,8 +45,8 @@ export class SwappFeeInteractionComponent {
     };
 
     // Simulazione del comando di trasferimento
-    const command = `iota client transfer --to ${this.destinationAddress} --object-id ${this.idObjectToTransfer} --gas-budget ${this.maxGasAmount}`;
-    console.log('Comando di trasferimento:', command);
+  //  const command = `iota client transfer --to ${this.destinationAddress} --object-id ${this.idObjectToTransfer} --gas-budget ${this.maxGasAmount}`;
+   // console.log('Comando di trasferimento:', command);
 
     this.http.post('http://localhost:3000/api/submit-fee', formData)
       .pipe(

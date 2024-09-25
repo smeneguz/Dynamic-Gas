@@ -77,7 +77,7 @@ submitFee(@Body() formData: any) {
   const sponsorAddress = formData.sponsorAddress; // Indirizzo dello sponsor
   const GasAmountInMint = Number(formData.maxGasAmount); // Quantità di gas in MINT
   const idObjectToTransfer = formData.idObjectToTransfer; // ID dell'oggetto da trasferire
-
+  const sponsorIOTAObject = formData.sponsorIOTAObject;
   // Recupera gli account fissi
   const fixedAccounts: FixedAccount[] = this.fixedAccountService.getFixedAccounts();
 
@@ -104,7 +104,7 @@ submitFee(@Body() formData: any) {
   const iotaAmount = this.currencyConverterService.convertMintToIota(GasAmountInMint);
 
   // Recupera il primo oggetto IOTA associato allo sponsor
-  const iotaObjects = this.iotaObjectService.getIotaObjectsForAccount(sponsorAddress);
+  /*const iotaObjects = this.iotaObjectService.getIotaObjectsForAccount(sponsorAddress);
   if (!iotaObjects.length) {
     return {
       success: false,
@@ -112,7 +112,7 @@ submitFee(@Body() formData: any) {
     };
   }
   const firstIotaObject = iotaObjects[0]; // Recupera il primo oggetto IOTA
-
+*/
   // Fase 1: Esegui lo switch sull'account sponsor
   const switchToSponsorCommand = `iota client switch --address ${sponsorAddress}`;
   exec(switchToSponsorCommand, (error, stdout, stderr) => {
@@ -137,7 +137,7 @@ submitFee(@Body() formData: any) {
     console.log(`Risultato dello switch sull'account sponsor: ${stdout}`);
 
     // Fase 2: Trasferisci IOTA dallo sponsor al mittente (sender)
-    const transferToSenderCommand = `iota client transfer --to ${senderAddress} --object-id ${firstIotaObject} --gas-budget 5000000`;
+    const transferToSenderCommand = `iota client transfer --to ${senderAddress} --object-id ${sponsorIOTAObject} --gas-budget 5000000`;
     exec(transferToSenderCommand, (error, stdout, stderr) => {
       if (error) {
         console.error(`Errore durante il trasferimento di IOTA dallo sponsor al sender: ${error.message}`);
