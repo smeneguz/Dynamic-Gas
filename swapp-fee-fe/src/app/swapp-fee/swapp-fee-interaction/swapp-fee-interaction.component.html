@@ -1,6 +1,6 @@
 <div class="container mt-5">
   <div class="card shadow-lg p-4 form-container">
-    <h2 class="form-title">Swapp Fee - Sponsoring</h2>
+    <h2 class="form-title">Transact with Gas Donation</h2>
     
     <form (ngSubmit)="onSubmit()">
       <!-- Sender Address -->
@@ -16,31 +16,6 @@
           required>
       </div>
 
-      <!-- Sponsor Address -->
-      <div class="form-group mb-3">
-        <label for="sponsorAddress" class="form-label">Sponsor Address</label>
-        <input 
-          type="text" 
-          id="sponsorAddress" 
-          [(ngModel)]="sponsorAddress" 
-          name="sponsorAddress" 
-          class="form-control" 
-          placeholder="Enter Sponsor Address" 
-          required>
-      </div>
-
-      <!-- Sponsor IOTA Object ID -->
-      <div class="form-group mb-3">
-        <label for="sponsorIOTAObject" class="form-label">Sponsor IOTA Object ID</label>
-        <input 
-          type="text" 
-          id="sponsorIOTAObject" 
-          [(ngModel)]="sponsorIOTAObject" 
-          name="sponsorIOTAObject" 
-          class="form-control" 
-          placeholder="Enter Sponsor Iota object ID" 
-          required>
-      </div>
 
       <!-- Destination Address -->
       <div class="form-group mb-3">
@@ -55,6 +30,47 @@
           required>
       </div>
 
+           <!-- Object ID To Transfer -->
+           <div class="form-group mb-3">
+            <label for="idObjectToTransfer" class="form-label">Object To Transfer</label>
+            <input 
+              type="text" 
+              id="idObjectToTransfer" 
+              [(ngModel)]="idObjectToTransfer" 
+              name="idObjectToTransfer" 
+              class="form-control" 
+              placeholder="Enter Object ID to Transfer" 
+              required>
+          </div>
+
+          
+      <!-- Gas Doner Address -->
+      <div class="form-group mb-3">
+        <label for="sponsorAddress" class="form-label">Gas Doner Address</label>
+        <input 
+          type="text" 
+          id="sponsorAddress" 
+          [(ngModel)]="sponsorAddress" 
+          name="sponsorAddress" 
+          class="form-control" 
+          placeholder="Enter Gas Doner Address" 
+          required>
+      </div>
+
+      <!-- Sponsor IOTA Object ID -->
+      <div class="form-group mb-3">
+        <label for="sponsorIOTAObject" class="form-label">Gas Donation</label>
+        <input 
+          type="text" 
+          id="sponsorIOTAObject" 
+          [(ngModel)]="sponsorIOTAObject" 
+          name="sponsorIOTAObject" 
+          class="form-control" 
+          placeholder="Enter Gas Object ID of the Doner (in IOTA)" 
+          required>
+      </div>
+
+
       <!-- Currency 
       <div class="form-group mb-3">
         <label for="selectedCurrency" class="form-label">Currency</label>
@@ -68,19 +84,7 @@
         </select>
       </div> -->
 
-      <!-- Object ID To Transfer -->
-      <div class="form-group mb-3">
-        <label for="idObjectToTransfer" class="form-label">Object ID To Transfer</label>
-        <input 
-          type="text" 
-          id="idObjectToTransfer" 
-          [(ngModel)]="idObjectToTransfer" 
-          name="idObjectToTransfer" 
-          class="form-control" 
-          placeholder="Enter Object ID to Transfer" 
-          required>
-      </div>
-
+ 
       <!-- Max Gas Amount 
       <div class="form-group mb-3">
         <label for="maxGasAmount" class="form-label">Max Gas Amount</label>
