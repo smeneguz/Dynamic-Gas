@@ -1,7 +1,6 @@
 # Dynamic-Gas
 ## Dynamic Gas Integration for IOTA Move
 ### Future implementations
-# SwapFee DApp Scripts
 
 ## Introduction
 
