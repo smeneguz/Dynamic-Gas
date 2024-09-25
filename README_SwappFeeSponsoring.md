@@ -33,6 +33,9 @@ Despite its limitations, the application offers several advantages:
 
 - **Compatible with any transaction**: As long as the transaction involves an object with an identifier (Object ID), the application can be used to sponsor the gas for that transaction.
 
+## Live tutorial
+A live demo of the application can be found on this youtube link: https://youtu.be/K_auw-yn9KA
+
 ## Getting Started
 
 1. Clone this repository from GitHub.
