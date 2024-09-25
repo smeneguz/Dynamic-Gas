@@ -19,51 +19,44 @@ export class SwappFeeInteractionComponent {
   sponsorIOTAObject: string = ''; //indirizzo oggetto IOTA dello sponsor
 
   transactionSuccess: boolean = false; // Stato della transazione
-  gasAmount: number = 0; // Quantità di gas pagato
-  iotaAmount: number = 0; // Quantità convertita in IOTA
   errorMessage: string = ''; // Messaggio di errore
   isSubmitting: boolean = false; // Stato per gestire l'invio del form
 
   constructor(private http: HttpClient) {}
 
   onSubmit() {
-    // Evita l'invio multiplo durante la richiesta
-    if (this.isSubmitting) return;
+    if (this.isSubmitting) return; // Evita l'invio multiplo durante la richiesta
 
-    // Imposta lo stato a "in invio"
-    this.isSubmitting = true;
+    this.isSubmitting = true; // Imposta lo stato a "in invio"
 
     const formData = {
       senderAddress: this.senderAddress,
-      sponsorAddress: this.sponsorAddress, // Aggiunge il campo sponsorAddress
-      sponsorIOTAObject: this.sponsorIOTAObject, // Aggiunge il campo sponsorAddress
-      
+      sponsorAddress: this.sponsorAddress,
+      sponsorIOTAObject: this.sponsorIOTAObject,
       destinationAddress: this.destinationAddress,
       selectedCurrency: this.selectedCurrency,
       maxGasAmount: this.maxGasAmount,
-      idObjectToTransfer: this.idObjectToTransfer // Aggiunge il nuovo campo idObjectToTransfer
+      idObjectToTransfer: this.idObjectToTransfer
     };
-
-    // Simulazione del comando di trasferimento
-  //  const command = `iota client transfer --to ${this.destinationAddress} --object-id ${this.idObjectToTransfer} --gas-budget ${this.maxGasAmount}`;
-   // console.log('Comando di trasferimento:', command);
 
     this.http.post('http://localhost:3000/api/submit-fee', formData)
       .pipe(
         catchError(error => {
           console.error('Errore durante l\'invio del form:', error);
           this.errorMessage = 'Errore durante la transazione: ' + (error.error?.message || 'Si è verificato un problema');
-          this.transactionSuccess = false; // Impedisce di mostrare il successo in caso di errore
+          this.transactionSuccess = false; // Nasconde il messaggio di successo in caso di errore
           this.isSubmitting = false; // Rende possibile un nuovo submit
           return throwError(error);
         })
       )
       .subscribe((response: any) => {
-        console.log('Risposta dal server:', response);
-        this.transactionSuccess = true; // Mostra il messaggio di successo
-        this.gasAmount = response.maxGasAmount; // Mostra il gas pagato
-        this.iotaAmount = response.iotaAmount; // Mostra l'importo convertito in IOTA
-        this.errorMessage = ''; // Resetta eventuali messaggi di errore
+        if (response.success) {
+          this.transactionSuccess = true; // Mostra il messaggio di successo
+          this.errorMessage = ''; // Resetta eventuali messaggi di errore
+        } else {
+          this.transactionSuccess = false; // Nasconde il messaggio di successo
+          this.errorMessage = response.message || 'Transazione fallita.'; // Mostra l'errore
+        }
         this.isSubmitting = false; // Permette di inviare di nuovo il form
       });
   }

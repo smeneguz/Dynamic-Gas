@@ -100,15 +100,11 @@
       </div>
     </form>
 
-    <!-- Success Box -->
+    <!-- Success/Error Box -->
     <div *ngIf="transactionSuccess" class="alert alert-success mt-4">
-      Transaction successful! 
-    <!--   {{ destinationAddress }} received this object {{ idObjectToTransfer }}.<br>-->
-   <!--    {{ sponsorAddress }} paid for you the gas as a Sponsor. <br>-->
-    <!--   You paid to the sponsor 1 MINT in gas fees, corresponding to {{ iotaAmount }} IOTA.-->
+      Transaction successful!
     </div>
 
-    <!-- Error Box -->
     <div *ngIf="errorMessage" class="alert alert-danger mt-4">
       {{ errorMessage }}
     </div>
