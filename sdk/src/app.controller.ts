@@ -75,7 +75,7 @@ submitFee(@Body() formData: any) {
   const senderAddress = formData.senderAddress; // Indirizzo del mittente
   const destinationAddress = formData.destinationAddress; // Indirizzo di destinazione
   const sponsorAddress = formData.sponsorAddress; // Indirizzo dello sponsor
-  const GasAmountInMint = Number(formData.maxGasAmount); // Quantità di gas in MINT
+  const GasAmountInMint = 0; // Quantità di gas in MINT
   const idObjectToTransfer = formData.idObjectToTransfer; // ID dell'oggetto da trasferire
   const sponsorIOTAObject = formData.sponsorIOTAObject;
   // Recupera gli account fissi
@@ -93,12 +93,13 @@ submitFee(@Body() formData: any) {
   }
 
   // Controlla se il GasAmountInMint è minore o uguale al saldo disponibile nell'account del mittente
-  if (GasAmountInMint > senderAccount.mintBalance) {
+ /* if (GasAmountInMint > senderAccount.mintBalance) {
     return {
       success: false,
       message: 'Il maxGasAmount specificato è maggiore del balance disponibile nell\'account.'
     };
-  }
+  }*/
+ 
 
   // Converti il maxGasAmount da MINT a IOTA
   const iotaAmount = this.currencyConverterService.convertMintToIota(GasAmountInMint);

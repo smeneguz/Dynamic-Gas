@@ -13,7 +13,7 @@ export class SwappFeeInteractionComponent {
   sponsorAddress: string = ''; // Indirizzo dello sponsor
   destinationAddress: string = ''; // Indirizzo di destinazione
   selectedCurrency: string = 'MINT'; // Valuta predefinita
-  maxGasAmount: string = ''; // Quantità massima di gas in MINT
+ // maxGasAmount: string = ''; // Quantità massima di gas in MINT
   idObjectToTransfer: string = ''; // ID dell'oggetto da trasferire
   currencies: string[] = ['MINT']; // Array con un'unica valuta
   sponsorIOTAObject: string = ''; //indirizzo oggetto IOTA dello sponsor
@@ -35,7 +35,7 @@ export class SwappFeeInteractionComponent {
       sponsorIOTAObject: this.sponsorIOTAObject,
       destinationAddress: this.destinationAddress,
       selectedCurrency: this.selectedCurrency,
-      maxGasAmount: this.maxGasAmount,
+   //   maxGasAmount: this.maxGasAmount,
       idObjectToTransfer: this.idObjectToTransfer
     };
 
