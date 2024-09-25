@@ -15,7 +15,7 @@ In addition, the system checks to see if all remaining coins have a stored excha
 
 Below you will find a images highlighting some of the executions/cases: 
 
-![Executions](Dynamic-Gas/futur_work/IMG.png)
+![Executions](IMG.png)
 
 
 
